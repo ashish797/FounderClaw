@@ -1,13 +1,13 @@
 #!/bin/bash
 # founderclaw installer — one command, non-destructive
-# Usage: curl -fsSL https://raw.githubusercontent.com/ashish797/YC-World/main/install.sh | bash
+# Usage: curl -fsSL https://raw.githubusercontent.com/ashish797/FounderClaw/main/install.sh | bash
 # Or: bash install.sh
 
 set -e
 
 SKILLS_DIR="${HOME}/.agents/skills"
 FOUNDERCLAW_DIR="${SKILLS_DIR}/founderclaw"
-REPO_URL="https://github.com/ashish797/YC-World.git"
+REPO_URL="https://github.com/ashish797/FounderClaw.git"
 
 echo "=== founderclaw installer ==="
 echo ""
@@ -76,7 +76,7 @@ else
 fi
 
 # Copy FounderClaw workspace template
-WORKSPACE_DIR="${HOME}/.openclaw/ycworld"
+WORKSPACE_DIR="${HOME}/.openclaw/founderclaw"
 if [ ! -d "$WORKSPACE_DIR" ]; then
     echo ""
     echo "Creating FounderClaw workspace..."

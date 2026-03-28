@@ -94,12 +94,12 @@ Also works: "setup founderclaw", "get founderclaw skills", "add founderclaw for 
 ### Method 2: Terminal (technical)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ashish797/YC-World/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ashish797/FounderClaw/main/install.sh | bash
 ```
 
 Or clone manually:
 ```bash
-git clone --depth 1 https://github.com/ashish797/YC-World.git ~/.agents/skills/founderclaw
+git clone --depth 1 https://github.com/ashish797/FounderClaw.git ~/.agents/skills/founderclaw
 cd ~/.agents/skills/founderclaw && bash install.sh
 ```
 
