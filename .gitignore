@@ -1,2 +1,4 @@
 browse/dist/browse
 *.node
+node_modules/
+browse/node_modules/
