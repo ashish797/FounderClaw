@@ -4,12 +4,12 @@
 
 | ID | Name | Emoji | Role | Model Tier | Workspace |
 |---|---|---|---|---|---|
-| yc-main | FounderClaw Main | 🎯 | CEO / Orchestrator | Best | ycworld/ceo/ |
-| strategy | Strategy | 📐 | Product thinking, design | Best | ycworld/strategy-dept/ |
-| shipper | Shipper | 🚀 | Code review, deploy | Fast | ycworld/shipping-dept/ |
-| tester | Tester | 🔍 | QA, browser testing | Vision | ycworld/testing-dept/ |
-| safety | Safety | 🛡️ | Security, guardrails | Fast | ycworld/security-dept/ |
-| observer | Observer | 📊 | Debug, retro, second opinion | Best | ycworld/history-dept/ |
+| founderclaw-main | FounderClaw Main | 🎯 | CEO / Orchestrator | Best | founderclaw/ceo/ |
+| strategy | Strategy | 📐 | Product thinking, design | Best | founderclaw/strategy-dept/ |
+| shipper | Shipper | 🚀 | Code review, deploy | Fast | founderclaw/shipping-dept/ |
+| tester | Tester | 🔍 | QA, browser testing | Vision | founderclaw/testing-dept/ |
+| safety | Safety | 🛡️ | Security, guardrails | Fast | founderclaw/security-dept/ |
+| observer | Observer | 📊 | Debug, retro, second opinion | Best | founderclaw/history-dept/ |
 
 ## Model Tiers
 
@@ -32,4 +32,4 @@
 
 ## Tool Policy
 
-See docs/ycworld-design.md for full tool policy matrix.
+See docs/founderclaw-design.md for full tool policy matrix.
