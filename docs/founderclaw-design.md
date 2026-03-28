@@ -24,7 +24,7 @@ CEO (FounderClaw Main) ←→ user (the client)
 ## Directory Structure
 
 ```
-~/.openclaw/ycworld/
+~/.openclaw/founderclaw/
 │
 ├── ceo/                              ← CEO's private office
 │   ├── AGENTS.md                     ← orchestration rules

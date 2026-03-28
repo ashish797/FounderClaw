@@ -81,5 +81,5 @@ FounderClaw uses 3 model tiers (user picks at install):
 
 ## Tool Policy
 
-Each department has different tool access. See `docs/ycworld-design.md` for
+Each department has different tool access. See `docs/founderclaw-design.md` for
 the full tool policy matrix.
