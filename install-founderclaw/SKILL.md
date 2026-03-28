@@ -1,218 +1,255 @@
 ---
 name: install-founderclaw
 description: >
-  Install FounderClaw — 29 skills, multi-agent engineering team for OpenClaw.
-  Non-destructive install. Requires permission for multi-agent config.
+  Install FounderClaw — a complete multi-agent system for OpenClaw.
+  Adds 6 agents (CEO + 5 departments), 29 skills, structured workspace,
+  tool policies, and model configuration. This modifies openclaw.json and
+  restarts the gateway. Requires user permission.
   Triggered by: "install founderclaw", "setup founderclaw", "get founderclaw",
   "add founderclaw", "install the engineering team".
 ---
 
 # Install FounderClaw
 
-You are the installer. Guide the user through a clean, professional install.
+You are installing a complete multi-agent system. This is NOT a skill install — it modifies the OpenClaw gateway config, adds agents, and restarts. Be calm, be clear, ask before doing anything.
 
-## Pre-flight
+## Rules
+- Never rush. One step at a time.
+- Explain before doing. Ask before modifying.
+- Batch your messages. Don't send 24 rapid-fire updates.
+- If something fails, say so clearly. Don't pretend it worked.
 
-Check if already installed:
-
-```bash
-if [ -d ~/.agents/skills/founderclaw ]; then
-    echo "ALREADY_INSTALLED"
-    ls ~/.agents/skills/founderclaw/*/SKILL.md 2>/dev/null | wc -l
-else
-    echo "NOT_INSTALLED"
-fi
-```
-
-If already installed:
-> FounderClaw is already installed with X skills. Want me to update it?
-> - Yes → run update flow
-> - No → show what's installed
-
-If not installed, proceed.
-
-## Step 1: Explain what will happen
+## Step 1: Explain what FounderClaw is
 
 Tell the user:
 
-> **FounderClaw** — a multi-agent engineering team for OpenClaw.
-> 
-> Here's what I'll do:
-> 1. Clone FounderClaw to `~/.agents/skills/founderclaw/`
-> 2. Symlink 29 skills to `~/.agents/skills/`
-> 3. Create workspace at `~/.openclaw/founderclaw/` (CEO + 5 departments)
-> 4. Build the headless browser (if Bun is available)
-> 
-> **What this modifies:**
-> - Adds skills to `~/.agents/skills/` (won't overwrite existing ones)
-> - Creates workspace directory (won't overwrite if exists)
-> - Modifies `AGENTS.md` to add proactive skill suggestions
-> 
-> **What this does NOT modify:**
-> - Your existing OpenClaw config (openclaw.json)
-> - Your existing agents or channels
-> - Your existing workspace files
-> 
-> Proceed?
+> **FounderClaw** is a multi-agent engineering team for OpenClaw.
+>
+> It installs:
+> - **29 skills** (code review, QA, design, security, debugging, shipping...)
+> - **6 agents** — a CEO that orchestrates 5 departments:
+>   - 🎯 **CEO** — talks to you, makes decisions, delegates work
+>   - 📐 **Strategy** — product thinking, design, architecture
+>   - 🚀 **Shipper** — code review, deployment, releases
+>   - 🔍 **Tester** — QA, browser testing, bug detection
+>   - 🛡️ **Safety** — security audits, guardrails
+>   - 📊 **Observer** — debugging, retrospectives, second opinions
+> - **Structured workspace** — shared projects + private department desks
+> - **Tool policies** — each agent only gets the tools it needs
+>
+> **This will modify your OpenClaw config** (`openclaw.json`) and restart the gateway. Your existing agents are NOT removed — the 6 FounderClaw agents are added alongside them.
+>
+> Ready to proceed?
 
-Wait for user confirmation.
+Wait for confirmation.
 
-## Step 2: Install skills
+## Step 2: Ask for model configuration
+
+Tell the user:
+
+> FounderClaw uses 3 model tiers. Which models should I use?
+>
+> You have these available: (list from agents.defaults.models in config)
+>
+> Pick one for each:
+> - **Fast** — quick tasks (Shipper, Safety) — e.g., haiku, gpt-4o-mini
+> - **Best** — deep thinking (CEO, Strategy, Observer) — e.g., sonnet, gpt-4
+> - **Vision** — image analysis (Tester, spawned sub-agents) — e.g., mimo-v2-omni
+>
+> Or say "use defaults" and I'll use your current primary model for all.
+
+Wait for their choices. Record them.
+
+## Step 3: Clone and install files
+
+Tell the user:
+
+> Installing FounderClaw files. This creates skills and workspace. Non-destructive.
+
+Run:
 
 ```bash
-git clone --single-branch --depth 1 https://github.com/ashish797/FounderClaw.git ~/.agents/skills/founderclaw
-cd ~/.agents/skills/founderclaw
+# Clone
+git clone --single-branch --depth 1 https://github.com/ashish797/FounderClaw.git ~/.agents/skills/founderclaw 2>&1
 
+# Symlink skills
+cd ~/.agents/skills/founderclaw
 INSTALLED=0
-SKIPPED=0
 for skill_dir in */; do
     [ ! -f "$skill_dir/SKILL.md" ] && continue
     skill_name=$(basename "$skill_dir")
     target=~/.agents/skills/"$skill_name"
-    if [ -e "$target" ] || [ -L "$target" ]; then
-        SKIPPED=$((SKIPPED + 1))
-    else
-        ln -sf "$(pwd)/$skill_dir" "$target"
-        INSTALLED=$((INSTALLED + 1))
-    fi
+    [ -e "$target" ] && continue
+    ln -sf "$(pwd)/$skill_dir" "$target"
+    INSTALLED=$((INSTALLED + 1))
 done
-echo "Installed: $INSTALLED skills, Skipped: $SKIPPED (already existed)"
-```
 
-## Step 3: Create workspace
-
-```bash
+# Create workspace
 if [ ! -d ~/.openclaw/founderclaw ]; then
     cp -r ~/.agents/skills/founderclaw/workspace-template ~/.openclaw/founderclaw
-    echo "Workspace created at ~/.openclaw/founderclaw/"
-    echo "  CEO + 5 departments + company config"
+    echo "WORKSPACE_CREATED"
 else
-    echo "Workspace already exists at ~/.openclaw/founderclaw/"
+    echo "WORKSPACE_EXISTS"
 fi
-```
 
-## Step 4: Build browse (optional)
-
-```bash
+# Build browse (optional)
 if command -v bun >/dev/null 2>&1; then
     cd ~/.agents/skills/founderclaw/browse
     bun install --silent 2>/dev/null
     bun build src/cli.ts --compile --outfile dist/browse 2>/dev/null
-    [ -x dist/browse ] && echo "✓ Browse binary built" || echo "⚠ Browse build failed"
+    [ -x dist/browse ] && echo "BROWSE_BUILT" || echo "BROWSE_FAILED"
+else
+    echo "BROWSE_SKIPPED"
 fi
+
+echo "FILES_DONE:$INSTALLED"
 ```
 
-## Step 5: Update AGENTS.md
+Report:
+> ✅ $INSTALLED skills installed
+> ✅ Workspace created at ~/.openclaw/founderclaw/
+> ✅/⚠ Browse binary status
 
-```bash
-WORKSPACE="${HOME}/.openclaw/workspace"
-if [ -f "$WORKSPACE/AGENTS.md" ]; then
-    if ! grep -q "FOUNDERCLAW" "$WORKSPACE/AGENTS.md" 2>/dev/null; then
-        echo "" >> "$WORKSPACE/AGENTS.md"
-        echo "# FounderClaw Skills" >> "$WORKSPACE/AGENTS.md"
-        echo "FounderClaw installed. 29 skills available. Say 'what skills do you have?' to list them." >> "$WORKSPACE/AGENTS.md"
-    fi
-fi
-```
+## Step 4: Ask for multi-agent config permission
 
-## Step 6: Multi-agent config (REQUIRES PERMISSION)
-
-This step modifies `openclaw.json` and restarts the gateway. NEVER do this without explicit permission.
+This is the critical step. NEVER skip it.
 
 Tell the user:
 
-> **Optional: Multi-agent setup**
-> 
-> FounderClaw works best with 6 agents:
-> - **FounderClaw Main** (CEO) — orchestrates everything
-> - **Strategy** — product thinking, design
-> - **Shipper** — code review, deployment
-> - **Tester** — QA, browser testing
-> - **Safety** — security, guardrails
-> - **Observer** — debugging, retrospectives
-> 
+> **Now the important part.** I need to add 6 agents to your OpenClaw config.
+>
 > This will:
-> - Add 6 agents to your `openclaw.json`
-> - Each agent has its own workspace under `~/.openclaw/founderclaw/`
-> - Your existing agents are NOT affected
+> - Add 6 new agents to `agents.list` in your openclaw.json
+> - Each agent gets its own workspace and skill filter
+> - Your existing agents (main, mc.dev, etc.) are NOT affected
 > - The gateway will restart
-> 
-> Want me to set this up?
-> - **Yes** → I'll add the agents and restart
-> - **No** → Skills still work individually (just no multi-agent orchestration)
-> - **Later** → You can run this again anytime
+>
+> **Agents I'll add:**
+> | ID | Name | Workspace | Model |
+> |---|---|---|---|
+> | founderclaw-main | CEO | ~/.openclaw/founderclaw/ceo | {best-model} |
+> | fc-strategy | Strategy | ~/.openclaw/founderclaw/strategy-dept | {best-model} |
+> | fc-shipper | Shipper | ~/.openclaw/founderclaw/shipping-dept | {fast-model} |
+> | fc-tester | Tester | ~/.openclaw/founderclaw/testing-dept | {vision-model} |
+> | fc-safety | Safety | ~/.openclaw/founderclaw/security-dept | {fast-model} |
+> | fc-observer | Observer | ~/.openclaw/founderclaw/history-dept | {best-model} |
+>
+> Proceed?
 
-If user says Yes, apply the config:
+Wait for "yes".
 
-```json5
-// This gets added to agents.list via config.patch
+## Step 5: Apply multi-agent config
+
+Use `gateway config.patch` to add the agents. Build the JSON from the user's model choices.
+
+```json
 {
-  id: "founderclaw-main",
-  name: "FounderClaw Main",
-  workspace: "~/.openclaw/founderclaw/ceo",
-  skills: ["office-hours", "plan-ceo-review", "plan-eng-review", "plan-design-review",
-           "design-consultation", "design-review", "design-shotgun", "autoplan",
-           "review", "ship", "land-and-deploy", "canary", "benchmark",
-           "document-release", "qa", "qa-only", "browse", "setup-browser-cookies",
-           "connect-chrome", "cso", "careful", "freeze", "guard", "unfreeze",
-           "investigate", "retro", "codex", "gstack-upgrade", "setup-deploy",
-           "install-founderclaw"]
-},
-{
-  id: "fc-strategy",
-  name: "Strategy",
-  workspace: "~/.openclaw/founderclaw/strategy-dept",
-  skills: ["office-hours", "plan-ceo-review", "plan-eng-review", "plan-design-review",
-           "design-consultation", "design-review", "design-shotgun", "autoplan"]
-},
-{
-  id: "fc-shipper",
-  name: "Shipper",
-  workspace: "~/.openclaw/founderclaw/shipping-dept",
-  skills: ["review", "ship", "land-and-deploy", "canary", "benchmark", "document-release"]
-},
-{
-  id: "fc-tester",
-  name: "Tester",
-  workspace: "~/.openclaw/founderclaw/testing-dept",
-  skills: ["qa", "qa-only", "browse", "setup-browser-cookies", "connect-chrome"]
-},
-{
-  id: "fc-safety",
-  name: "Safety",
-  workspace: "~/.openclaw/founderclaw/security-dept",
-  skills: ["cso", "careful", "freeze", "guard", "unfreeze"]
-},
-{
-  id: "fc-observer",
-  name: "Observer",
-  workspace: "~/.openclaw/founderclaw/history-dept",
-  skills: ["investigate", "retro", "codex"]
+  "agents": {
+    "list": [
+      {
+        "id": "founderclaw-main",
+        "name": "FounderClaw CEO",
+        "workspace": "~/.openclaw/founderclaw/ceo",
+        "model": { "primary": "{best-model}" }
+      },
+      {
+        "id": "fc-strategy",
+        "name": "Strategy",
+        "workspace": "~/.openclaw/founderclaw/strategy-dept",
+        "model": { "primary": "{best-model}" },
+        "skills": ["office-hours", "plan-ceo-review", "plan-eng-review", "plan-design-review", "design-consultation", "design-review", "design-shotgun", "autoplan"]
+      },
+      {
+        "id": "fc-shipper",
+        "name": "Shipper",
+        "workspace": "~/.openclaw/founderclaw/shipping-dept",
+        "model": { "primary": "{fast-model}" },
+        "skills": ["review", "ship", "land-and-deploy", "canary", "benchmark", "document-release"]
+      },
+      {
+        "id": "fc-tester",
+        "name": "Tester",
+        "workspace": "~/.openclaw/founderclaw/testing-dept",
+        "model": { "primary": "{vision-model}" },
+        "skills": ["qa", "qa-only", "browse", "setup-browser-cookies", "connect-chrome"]
+      },
+      {
+        "id": "fc-safety",
+        "name": "Safety",
+        "workspace": "~/.openclaw/founderclaw/security-dept",
+        "model": { "primary": "{fast-model}" },
+        "skills": ["cso", "careful", "freeze", "guard", "unfreeze"]
+      },
+      {
+        "id": "fc-observer",
+        "name": "Observer",
+        "workspace": "~/.openclaw/founderclaw/history-dept",
+        "model": { "primary": "{best-model}" },
+        "skills": ["investigate", "retro", "codex"]
+      }
+    ]
+  }
 }
 ```
 
-## Step 7: Report
+Replace `{best-model}`, `{fast-model}`, `{vision-model}` with the user's choices.
 
-Summarize what was installed:
+Apply via `gateway config.patch`. The gateway will restart.
+
+## Step 6: Confirm installation
+
+After restart, tell the user:
 
 > **FounderClaw installed!**
-> 
+>
 > ✅ 29 skills in `~/.agents/skills/`
+> ✅ 6 agents configured (CEO + 5 departments)
 > ✅ Workspace at `~/.openclaw/founderclaw/`
-> ✅ Multi-agent config: [Yes/No]
-> ✅ Browse binary: [Built/Not built]
-> 
+> ✅ Tool policies applied
+> ✅ Models configured
+>
+> **Your existing agents are untouched.**
+>
 > **Quick start:**
 > - Say "what skills do you have?" to see all 29
 > - Say "I have an idea" to start office-hours
 > - Say "review my code" for a code review
 > - Say "test this site" for QA
-> 
-> **Documentation:** https://github.com/ashish797/FounderClaw
+> - Say "install founderclaw" to update in the future
+>
+> **Documentation:** https://founderclaw.hashqy.com
 
-## Update Flow
+## Uninstall
 
-If user says "update founderclaw":
+When user says "uninstall founderclaw":
+
+> This will:
+> - Remove all FounderClaw skill symlinks
+> - Delete `~/.agents/skills/founderclaw/`
+> - Remove the 6 FounderClaw agents from your config
+> - **Keep** `~/.openclaw/founderclaw/` workspace (your project data)
+> - Gateway will restart
+>
+> Proceed?
+
+If yes:
+
+```bash
+# Remove symlinks
+for link in ~/.agents/skills/*; do
+    [ -L "$link" ] || continue
+    target=$(readlink "$link")
+    echo "$target" | grep -q "founderclaw" && rm "$link"
+done
+rm -rf ~/.agents/skills/founderclaw
+echo "Skills removed"
+```
+
+Then remove agents from config via `gateway config.patch` (remove the 6 FounderClaw entries from agents.list).
+
+## Update
+
+When user says "update founderclaw":
 
 ```bash
 cd ~/.agents/skills/founderclaw
@@ -222,26 +259,4 @@ git reset --hard origin/main
 echo "Updated to $(git log --oneline -1)"
 ```
 
-## Uninstall Flow
-
-If user says "uninstall founderclaw":
-
-> This will:
-> - Remove all FounderClaw skill symlinks
-> - Delete `~/.agents/skills/founderclaw/`
-> - Keep `~/.openclaw/founderclaw/` workspace (your project data)
-> - NOT touch your openclaw.json config
-> 
-> Proceed?
-
-If yes:
-
-```bash
-for link in ~/.agents/skills/*; do
-    [ -L "$link" ] || continue
-    target=$(readlink "$link")
-    echo "$target" | grep -q "founderclaw" && rm "$link"
-done
-rm -rf ~/.agents/skills/founderclaw
-echo "FounderClaw removed. Workspace preserved at ~/.openclaw/founderclaw/"
-```
+No config changes needed — just update the files.

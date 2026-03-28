@@ -1,7 +1,7 @@
 {
   "name": "founderclaw",
   "version": "0.1.0",
-  "description": "FounderClaw — Multi-agent engineering team for OpenClaw. Build startups with AI agents."
+  "description": "FounderClaw — Multi-agent engineering team for OpenClaw. Build startups with AI agents.",
   "license": "MIT",
   "type": "module",
   "bin": {

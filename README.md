@@ -1,138 +1,130 @@
-# founderclaw
+# FounderClaw
 
-Ashish's [founderclaw](https://github.com/ashish797/founderclaw) adapted for [OpenClaw](https://github.com/openclaw/openclaw).
+**Multi-agent engineering team for OpenClaw.**
 
-29 opinionated skills that turn your AI agent into a virtual engineering team — CEO, Designer, Eng Manager, Release Manager, Doc Engineer, QA, and Security Officer.
+FounderClaw transforms your OpenClaw into a complete engineering organization — a CEO that orchestrates 5 specialist departments, 29 skills, structured workspace, and automated workflows.
 
-A complete 1:1 port of [founderclaw](https://github.com/ashish797/founderclaw). Nothing skipped.
+**This is not a skill pack. It's a system.**
 
-## What's different from original founderclaw
+## What it installs
 
-| Original founderclaw | founderclaw |
+| Component | What |
 |---|---|
-| Claude Code slash commands (`/qa`, `/ship`) | OpenClaw SKILL.md skills (triggered by description) |
-| Compiled browse binary (headless Chromium) | OpenClaw's built-in browser tool |
-| Codex CLI integration | OpenClaw sub-agent spawning |
-| `~/.claude/skills/` | `~/.agents/skills/` |
-| `AskUserQuestion` tool | Conversational prompting |
-| Claude Code hooks (PreToolUse) | Instruction-based safety rules |
-| Telemetry & update checks | None (clean) |
-
-## Skills
-
-### Strategy & Planning
-| Skill | Description |
-|---|---|
-| office-hours | Structured brainstorming — Startup (6 forcing questions) or Builder mode. Saves a design doc. |
-| plan-ceo-review | CEO/founder-mode plan review — scope expansion, strategy, ambition check |
-| plan-eng-review | Eng manager architecture review — data flow, diagrams, edge cases, test coverage |
-| plan-design-review | Designer's eye plan review — UI/UX gaps before implementation |
-| autoplan | Auto-review pipeline — runs CEO, design, and eng reviews in sequence |
-
-### Code Quality
-| Skill | Description |
-|---|---|
-| review | Pre-landing PR review — SQL safety, race conditions, LLM trust boundaries, scope drift |
-| investigate | Systematic debugging — root cause first, 3-strike hypothesis testing, regression tests |
-| codex (second-opinion) | Independent sub-agent review — Review, Challenge (adversarial), or Consult mode |
-
-### Design
-| Skill | Description |
-|---|---|
-| design-consultation | Design system creation — typography, color, layout, spacing. Creates DESIGN.md. |
-| design-review | Visual QA — spacing, hierarchy, consistency, accessibility checks |
-| design-shotgun | Rapid visual exploration — generates 3 design variants for comparison |
-
-### Shipping
-| Skill | Description |
-|---|---|
-| ship | Ship workflow — detect base, merge, test, review diff, bump VERSION, CHANGELOG, PR |
-| land-and-deploy | Land PR and deploy — merge, tag, deploy, verify |
-| canary | Post-deploy canary monitoring — watch for errors after release |
-
-### Quality Assurance
-| Skill | Description |
-|---|---|
-| qa | Systematic QA testing + iterative bug fixing — before/after health scores |
-| qa-only | QA report only (no fixing) — structured report with screenshots and repro steps |
-| benchmark | Performance benchmarking — before/after comparisons, regression detection |
-
-### Safety
-| Skill | Description |
-|---|---|
-| careful | Destructive command guardrails — warns before rm -rf, force-push, DROP TABLE |
-| freeze | Restrict edits to a directory — blocks changes outside scope |
-| guard | Full safety — combines careful + freeze for maximum protection |
-| unfreeze | Clear the freeze boundary — allows edits everywhere again |
-
-### Documentation & Retrospectives
-| Skill | Description |
-|---|---|
-| document-release | Generate release notes, changelogs, and documentation from commits |
-| retro | Weekly engineering retrospective — commit analysis, work patterns, trends |
-
-### Security
-| Skill | Description |
-|---|---|
-| cso | Chief Security Officer — OWASP + STRIDE audit, vulnerability scanning |
+| 29 Skills | code review, QA, design, security, debugging, shipping, browser testing... |
+| 6 Agents | CEO (orchestrator) + Strategy, Shipper, Tester, Safety, Observer |
+| Workspace | `~/.openclaw/founderclaw/` — shared projects + private department desks |
+| Tool Policies | each agent only gets the tools it needs |
+| Model Config | 3 tiers: Fast, Best, Vision |
 
 ## Install
 
-### Method 1: Chat Command (easiest)
+### Chat (recommended)
 
-Just tell your OpenClaw agent:
+Paste this into any OpenClaw chat:
 
-> "install founderclaw"
+> I'd like you to set up FounderClaw, the multi-agent engineering team for OpenClaw.
+> 
+> Clone it: `git clone --depth 1 https://github.com/ashish797/FounderClaw.git ~/.agents/skills/founderclaw`
+> 
+> Then run the installer: `cd ~/.agents/skills/founderclaw && bash install.sh`
 
-That's it. The agent clones the repo, symlinks all skills, builds the browser binary. Non-destructive — never overwrites your existing skills.
+Or just say: **"install founderclaw"**
 
-Also works: "setup founderclaw", "get founderclaw skills", "add founderclaw for openclaw"
+The agent will:
+1. Explain what FounderClaw is
+2. Ask for your model preferences
+3. Install 29 skills + create workspace
+4. Ask permission to modify your OpenClaw config
+5. Add 6 agents with proper tool policies
+6. Restart the gateway
 
-**Update:** "update founderclaw"
-**Uninstall:** "uninstall founderclaw"
-
-### Method 2: Terminal (technical)
+### Terminal
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/ashish797/FounderClaw/main/install.sh | bash
 ```
 
-Or clone manually:
-```bash
-git clone --depth 1 https://github.com/ashish797/FounderClaw.git ~/.agents/skills/founderclaw
-cd ~/.agents/skills/founderclaw && bash install.sh
-```
+Then say "install founderclaw" in chat to complete the multi-agent config.
 
-**Non-destructive:** never overwrites existing skills. Skips any skill name that already exists in `~/.agents/skills/`.
+### Landing page
 
-### Method 3: ClawHub (coming soon)
+Visit https://founderclaw.hashqy.com for copy-paste setup instruction.
 
-```bash
-clawhub install founderclaw
-```
+## The Team
+
+| Agent | Emoji | Role |
+|---|---|---|
+| CEO | 🎯 | Orchestrates everything. Talks to you. |
+| Strategy | 📐 | Product thinking, design, architecture |
+| Shipper | 🚀 | Code review, deployment, releases |
+| Tester | 🔍 | QA, browser testing, bug detection |
+| Safety | 🛡️ | Security audits, guardrails |
+| Observer | 📊 | Debugging, retrospectives, second opinions |
+
+## Skills (29)
+
+### Strategy & Planning
+- office-hours — brainstorm with 6 forcing questions
+- plan-ceo-review — CEO-level scope and strategy review
+- plan-eng-review — architecture, data flow, edge cases
+- plan-design-review — UI/UX plan review
+- design-consultation — create a design system
+- design-review — visual QA
+- design-shotgun — rapid visual exploration (3 variants)
+- autoplan — auto-select and chain the right reviews
+
+### Code Quality
+- review — two-pass code review (CRITICAL + INFORMATIONAL)
+- investigate — systematic debugging, root cause first
+- codex — independent second opinion via sub-agent
+
+### Design
+- design-consultation — create a design system (typography, color, layout)
+- design-review — visual QA (spacing, hierarchy, accessibility)
+- design-shotgun — rapid visual exploration (3 variants)
+
+### Shipping
+- ship — merge, test, version bump, changelog, create PR
+- land-and-deploy — merge, tag, deploy, verify
+- canary — post-deploy monitoring
+- document-release — release notes and changelogs
+- benchmark — performance regression detection
+
+### Quality Assurance
+- qa — systematic testing + iterative bug fixing
+- qa-only — QA report only (no fixing)
+- browse — headless browser (~100ms per command)
+- setup-browser-cookies — import cookies for auth testing
+- connect-chrome — real Chrome with Side Panel
+
+### Safety
+- cso — OWASP + STRIDE security audit
+- careful — warns before destructive commands
+- freeze — restrict edits to a directory
+- guard — careful + freeze combined
+- unfreeze — remove edit restriction
+
+### Retrospectives
+- retro — weekly engineering retrospective
+
+### Setup
+- gstack-upgrade — self-update
+- setup-deploy — configure deployment platform
+- install-founderclaw — install/repair/uninstall
 
 ## Uninstall
 
-Chat: "uninstall founderclaw"
-Terminal: `bash ~/.agents/skills/founderclaw/uninstall.sh`
+Say: **"uninstall founderclaw"**
 
-Both remove all symlinks and the repo. Your other skills stay untouched.
+Or manually:
+```bash
+bash ~/.agents/skills/founderclaw/uninstall.sh
+```
 
-## Browser (browse)
+## Inspired By
 
-The browse skill is a **headless Chromium browser** — fast, persistent session, structured snapshots, diff mode, responsive testing. Compiles to a single binary using Bun + Playwright.
-
-**Auto-built on install** if Bun is available. Requires `CONTAINER=1` in Docker environments.
-
-## Setup & Utilities
-
-| Skill | Description |
-|---|---|
-| connect-chrome | Launch real Chrome with Side Panel — watch every action in real time |
-| setup-browser-cookies | Import cookies from Chrome/Firefox/Edge for authenticated testing |
-| setup-deploy | Configure deployment platform (Vercel, Fly, Render, Heroku, etc.) |
-| founderclaw-upgrade | Self-update to latest version |
+[gstack](https://github.com/garrytan/gstack) by Garry Tan — MIT License. Rebuilt for OpenClaw.
 
 ## License
 
-MIT — same as [founderclaw](https://github.com/ashish797/founderclaw/blob/main/LICENSE).
+MIT
