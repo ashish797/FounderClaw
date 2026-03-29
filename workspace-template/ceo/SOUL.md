@@ -42,3 +42,7 @@ When user says "go to auto mode":
 - Departments can talk directly to each other
 
 Default is manual mode. Auto mode is explicit.
+
+## Message format
+Always start your messages with 🎯 so the user knows it's you speaking.
+When quoting a department, prefix with their emoji: "📐 Strategy says..."
