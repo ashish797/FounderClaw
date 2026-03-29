@@ -115,21 +115,28 @@ cat > ~/.agents/skills/founderclaw/install-founderclaw/agents-config.json << 'EO
 EOF
 ```
 
-## Step 4: Verify
+## Step 4: VERIFY agents exist in config (MANDATORY CHECK)
 
-After config is applied (or manual instructions given), verify:
+After Step 3, verify the agents were actually added. Run `agents_list` to check:
 
-```bash
-# Check skills are linked
-ls ~/.agents/skills/ | grep -c "founderclaw\|office-hours\|review\|qa\|ship\|investigate"
-
-# Check workspace
-ls ~/.openclaw/founderclaw/ceo/SOUL.md 2>/dev/null && echo "CEO workspace OK"
+```
+Use the agents_list tool to check if founderclaw-main, fc-strategy, fc-shipper, fc-tester, fc-safety, fc-observer exist.
 ```
 
-## Step 5: Report
+If any of the 6 agents are MISSING from the config:
+- The config.patch did NOT work
+- You MUST apply it again or provide manual instructions
+- Do NOT report "installed" until all 6 agents are confirmed
 
-Tell the user:
+If agents_list tool is not available:
+- Read the config file: check if the agents exist
+- If not, provide the manual instructions from Step 3
+
+**This check is mandatory. Do not skip it.**
+
+## Step 5: Report ONLY after verification
+
+Tell the user ONLY after confirming all 6 agents exist:
 
 > **FounderClaw installed!**
 >
@@ -137,12 +144,14 @@ Tell the user:
 > ✅ 6 agents configured (CEO + 5 departments)
 > ✅ Workspace at ~/.openclaw/founderclaw/
 >
-> **Quick start:**
-> - Say "what skills do you have?" to see all 29
-> - Say "I have an idea" to start office-hours
-> - Say "review my code" for a code review
->
-> Gateway will restart to apply the new agents.
+> **Gateway will restart to apply the new agents.**
+
+If agents were NOT added:
+
+> ⚠️ Skills installed but agents were NOT configured.
+> You need to add 6 agents to your openclaw.json manually.
+> Run: `cat ~/.agents/skills/founderclaw/install-founderclaw/agents-config.json`
+> Copy the contents into your `agents.list` array in openclaw.json.
 
 ## Uninstall
 
