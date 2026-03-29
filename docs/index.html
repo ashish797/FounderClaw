@@ -65,11 +65,13 @@
   <h2>📋 Copy & Paste This Into Your OpenClaw Chat</h2>
   <div class="instruction" id="setupText">I'd like you to set up FounderClaw, the multi-agent engineering team for OpenClaw.
 
-Clone it: <code>git clone --depth 1 https://github.com/ashish797/FounderClaw.git ~/.agents/skills/founderclaw</code>
+Run this in terminal: <code>curl -fsSL https://raw.githubusercontent.com/ashish797/FounderClaw/main/install.sh | bash</code>
 
-Then run the installer: <code>cd ~/.agents/skills/founderclaw && bash install.sh</code>
+Or install via ClawHub: <code>clawhub install founderclaw</code>
 
-This installs 29 skills, creates a workspace with CEO + 5 departments, and builds the headless browser. Non-destructive — won't overwrite existing skills.</div>
+Or just say: <strong>"install founderclaw"</strong> in any OpenClaw chat.
+
+This installs 30 skills, creates 6 agents (CEO + 5 departments), configures the workspace, and builds the headless browser. One command, everything.</div>
   <button class="copy-btn" id="copyBtn" onclick="copySetup()">📋 Copy Setup Instruction</button>
   <div class="copy-hint">Paste this into any OpenClaw chat. The agent will handle the rest.</div>
 </div>
@@ -131,11 +133,13 @@ This installs 29 skills, creates a workspace with CEO + 5 departments, and build
 function copySetup() {
   const text = `I'd like you to set up FounderClaw, the multi-agent engineering team for OpenClaw.
 
-Clone it: git clone --depth 1 https://github.com/ashish797/FounderClaw.git ~/.agents/skills/founderclaw
+Run this in terminal: curl -fsSL https://raw.githubusercontent.com/ashish797/FounderClaw/main/install.sh | bash
 
-Then run the installer: cd ~/.agents/skills/founderclaw && bash install.sh
+Or install via ClawHub: clawhub install founderclaw
 
-This installs 29 skills, creates a workspace with CEO + 5 departments, and builds the headless browser. Non-destructive — won't overwrite existing skills.`;
+Or just say "install founderclaw" in any OpenClaw chat.
+
+This installs 30 skills, creates 6 agents (CEO + 5 departments), configures the workspace, and builds the headless browser. One command, everything.`;
   navigator.clipboard.writeText(text).then(() => {
     const btn = document.getElementById('copyBtn');
     btn.textContent = '✅ Copied!';
