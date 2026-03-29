@@ -5,11 +5,11 @@ import type { TemplateContext } from './types';
  *
  * Each skill runs independently via `claude -p`. There is no shared loader.
  * The preamble provides: update checks, session tracking, user preferences,
- * repo mode detection, and telemetry.
+ * repo mode detection, and logging.
  *
  * Telemetry data flow:
- *   1. Always: local JSONL append to ~/.openclaw/ycworld/company/analytics/ (inline, inspectable)
- *   2. If _TEL != "off" AND binary exists: founderclaw-telemetry-log for remote reporting
+ *   1. Always: local JSONL append to ~/.openclaw/ycworld/company/output/ (inline, inspectable)
+ *   2. If _TEL != "off" AND binary exists: echo for remote reporting
  */
 
 function generatePreambleBash(ctx: TemplateContext): string {
@@ -45,19 +45,19 @@ REPO_MODE=\${REPO_MODE:-unknown}
 echo "REPO_MODE: $REPO_MODE"
 _LAKE_SEEN=$([ -f ~/.openclaw/ycworld/company/.completeness-intro-seen ] && echo "yes" || echo "no")
 echo "LAKE_INTRO: $_LAKE_SEEN"
-_TEL=$(${ctx.paths.binDir}/founderclaw-config get telemetry 2>/dev/null || true)
-_TEL_PROMPTED=$([ -f ~/.openclaw/ycworld/company/.telemetry-prompted ] && echo "yes" || echo "no")
+_TEL=$(${ctx.paths.binDir}/founderclaw-config get logging 2>/dev/null || true)
+_TEL_PROMPTED=$([ -f ~/.openclaw/ycworld/company/.logging-prompted ] && echo "yes" || echo "no")
 _TEL_START=$(date +%s)
 _SESSION_ID="$$-$(date +%s)"
 echo "TELEMETRY: \${_TEL:-off}"
 echo "TEL_PROMPTED: $_TEL_PROMPTED"
-mkdir -p ~/.openclaw/ycworld/company/analytics
-echo '{"skill":"${ctx.skillName}","ts":"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'","repo":"'$(basename "$(git rev-parse --show-toplevel 2>/dev/null)" 2>/dev/null || echo "unknown")'"}'  >> ~/.openclaw/ycworld/company/analytics/skill-usage.jsonl 2>/dev/null || true
+mkdir -p ~/.openclaw/ycworld/company/output
+echo '{"skill":"${ctx.skillName}","ts":"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'","repo":"'$(basename "$(git rev-parse --show-toplevel 2>/dev/null)" 2>/dev/null || echo "unknown")'"}'  >> ~/.openclaw/ycworld/company/output/skill-usage.jsonl 2>/dev/null || true
 # zsh-compatible: use find instead of glob to avoid NOMATCH error
-for _PF in $(find ~/.openclaw/ycworld/company/analytics -maxdepth 1 -name '.pending-*' 2>/dev/null); do
+for _PF in $(find ~/.openclaw/ycworld/company/output -maxdepth 1 -name '.pending-*' 2>/dev/null); do
   if [ -f "$_PF" ]; then
-    if [ "$_TEL" != "off" ] && [ -x "${ctx.paths.binDir}/founderclaw-telemetry-log" ]; then
-      ${ctx.paths.binDir}/founderclaw-telemetry-log --event-type skill_run --skill _pending_finalize --outcome unknown --session-id "$_SESSION_ID" 2>/dev/null || true
+    if [ "$_TEL" != "off" ] && [ -x "${ctx.paths.binDir}/echo" ]; then
+      ${ctx.paths.binDir}/echo --event-type skill_run --skill _pending_finalize --outcome unknown --session-id "$_SESSION_ID" 2>/dev/null || true
     fi
     rm -f "$_PF" 2>/dev/null || true
   fi
@@ -97,18 +97,18 @@ Only run \`open\` if the user says yes. Always run \`touch\` to mark as seen. Th
 
 function generateTelemetryPrompt(ctx: TemplateContext): string {
   return `If \`TEL_PROMPTED\` is \`no\` AND \`LAKE_INTRO\` is \`yes\`: After the lake intro is handled,
-ask the user about telemetry. Use AskUserQuestion:
+ask the user about logging. Use AskUserQuestion:
 
 > Help founderclaw get better! Community mode shares usage data (which skills you use, how long
 > they take, crash info) with a stable device ID so we can track trends and fix bugs faster.
 > No code, file paths, or repo names are ever sent.
-> Change anytime with \`founderclaw-config set telemetry off\`.
+> Change anytime with \`founderclaw-config set logging off\`.
 
 Options:
 - A) Help founderclaw get better! (recommended)
 - B) No thanks
 
-If A: run \`${ctx.paths.binDir}/founderclaw-config set telemetry community\`
+If A: run \`${ctx.paths.binDir}/founderclaw-config set logging community\`
 
 If B: ask a follow-up AskUserQuestion:
 
@@ -119,19 +119,19 @@ Options:
 - A) Sure, anonymous is fine
 - B) No thanks, fully off
 
-If B→A: run \`${ctx.paths.binDir}/founderclaw-config set telemetry anonymous\`
-If B→B: run \`${ctx.paths.binDir}/founderclaw-config set telemetry off\`
+If B→A: run \`${ctx.paths.binDir}/founderclaw-config set logging anonymous\`
+If B→B: run \`${ctx.paths.binDir}/founderclaw-config set logging off\`
 
 Always run:
 \`\`\`bash
-touch ~/.openclaw/ycworld/company/.telemetry-prompted
+touch ~/.openclaw/ycworld/company/.logging-prompted
 \`\`\`
 
 This only happens once. If \`TEL_PROMPTED\` is \`yes\`, skip this entirely.`;
 }
 
 function generateProactivePrompt(ctx: TemplateContext): string {
-  return `If \`PROACTIVE_PROMPTED\` is \`no\` AND \`TEL_PROMPTED\` is \`yes\`: After telemetry is handled,
+  return `If \`PROACTIVE_PROMPTED\` is \`no\` AND \`TEL_PROMPTED\` is \`yes\`: After logging is handled,
 ask the user about proactive behavior. Use AskUserQuestion:
 
 > founderclaw can proactively figure out when you might need a skill while you work —
@@ -308,7 +308,7 @@ Before building anything unfamiliar, **search first.** See \`${ctx.paths.skillRo
 
 **Eureka:** When first-principles reasoning contradicts conventional wisdom, name it and log:
 \`\`\`bash
-jq -n --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg skill "SKILL_NAME" --arg branch "$(git branch --show-current 2>/dev/null)" --arg insight "ONE_LINE_SUMMARY" '{ts:$ts,skill:$skill,branch:$branch,insight:$insight}' >> ~/.openclaw/ycworld/company/analytics/eureka.jsonl 2>/dev/null || true
+jq -n --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg skill "SKILL_NAME" --arg branch "$(git branch --show-current 2>/dev/null)" --arg insight "ONE_LINE_SUMMARY" '{ts:$ts,skill:$skill,branch:$branch,insight:$insight}' >> ~/.openclaw/ycworld/company/output/eureka.jsonl 2>/dev/null || true
 \`\`\``;
 }
 
@@ -360,13 +360,13 @@ RECOMMENDATION: [what the user should do next]
 
 ## Telemetry (run last)
 
-After the skill workflow completes (success, error, or abort), log the telemetry event.
+After the skill workflow completes (success, error, or abort), log the logging event.
 Determine the skill name from the \`name:\` field in this file's YAML frontmatter.
 Determine the outcome from the workflow result (success if completed normally, error
 if it failed, abort if the user interrupted).
 
-**PLAN MODE EXCEPTION — ALWAYS RUN:** This command writes telemetry to
-\`~/.openclaw/ycworld/company/analytics/\` (user config directory, not project files). The skill
+**PLAN MODE EXCEPTION — ALWAYS RUN:** This command writes logging to
+\`~/.openclaw/ycworld/company/output/\` (user config directory, not project files). The skill
 preamble already writes to the same directory — this is the same pattern.
 Skipping this command loses session duration and outcome data.
 
@@ -375,12 +375,12 @@ Run this bash:
 \`\`\`bash
 _TEL_END=$(date +%s)
 _TEL_DUR=$(( _TEL_END - _TEL_START ))
-rm -f ~/.openclaw/ycworld/company/analytics/.pending-"$_SESSION_ID" 2>/dev/null || true
-# Local analytics (always available, no binary needed)
-echo '{"skill":"SKILL_NAME","duration_s":"'"$_TEL_DUR"'","outcome":"OUTCOME","browse":"USED_BROWSE","session":"'"$_SESSION_ID"'","ts":"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"}' >> ~/.openclaw/ycworld/company/analytics/skill-usage.jsonl 2>/dev/null || true
-# Remote telemetry (opt-in, requires binary)
-if [ "$_TEL" != "off" ] && [ -x founderclaw/bin/founderclaw-telemetry-log ]; then
-  founderclaw/bin/founderclaw-telemetry-log \\
+rm -f ~/.openclaw/ycworld/company/output/.pending-"$_SESSION_ID" 2>/dev/null || true
+# Local output (always available, no binary needed)
+echo '{"skill":"SKILL_NAME","duration_s":"'"$_TEL_DUR"'","outcome":"OUTCOME","browse":"USED_BROWSE","session":"'"$_SESSION_ID"'","ts":"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"}' >> ~/.openclaw/ycworld/company/output/skill-usage.jsonl 2>/dev/null || true
+# Remote logging (opt-in, requires binary)
+if [ "$_TEL" != "off" ] && [ -x founderclaw/bin/echo ]; then
+  founderclaw/bin/echo \\
     --skill "SKILL_NAME" --duration "$_TEL_DUR" --outcome "OUTCOME" \\
     --used-browse "USED_BROWSE" --session-id "$_SESSION_ID" 2>/dev/null &
 fi
@@ -389,7 +389,7 @@ fi
 Replace \`SKILL_NAME\` with the actual skill name from frontmatter, \`OUTCOME\` with
 success/error/abort, and \`USED_BROWSE\` with true/false based on whether \`$B\` was used.
 If you cannot determine the outcome, use "unknown". The local JSONL always logs. The
-remote binary only runs if telemetry is not off and the binary exists.
+remote binary only runs if logging is not off and the binary exists.
 
 ## Plan Status Footer
 
@@ -488,7 +488,7 @@ Avoid filler, throat-clearing, generic optimism, founder cosplay, and unsupporte
 
 // Preamble Composition (tier → sections)
 // ─────────────────────────────────────────────
-// T1: core + upgrade + lake + telemetry + voice(trimmed) + contributor + completion
+// T1: core + upgrade + lake + logging + voice(trimmed) + contributor + completion
 // T2: T1 + voice(full) + ask + completeness
 // T3: T2 + repo-mode + search
 // T4: (same as T3 — TEST_FAILURE_TRIAGE is a separate {{}} placeholder, not preamble)

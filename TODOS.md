@@ -435,7 +435,7 @@ Linux cookie import shipped in v0.11.11.0 (Wave 3). Supports Chrome, Chromium, B
 
 ~~**What:** Pin E2E tests to claude-sonnet-4-6 for cost efficiency, add retry:2 for flaky LLM responses.~~
 
-Shipped: Default model changed to Sonnet for structure tests (~30), Opus retained for quality tests (~10). `--retry 2` added. `EVALS_MODEL` env var for override. `test:e2e:fast` tier added. Rate-limit telemetry (first_response_ms, max_inter_turn_ms) and wall_clock_ms tracking added to eval-store.
+Shipped: Default model changed to Sonnet for structure tests (~30), Opus retained for quality tests (~10). `--retry 2` added. `EVALS_MODEL` env var for override. `test:e2e:fast` tier added. Rate-limit logging (first_response_ms, max_inter_turn_ms) and wall_clock_ms tracking added to eval-store.
 
 ### Eval web dashboard
 
@@ -604,19 +604,19 @@ Shipped in v0.8.3. Step 8.5 added to `/ship` — after creating the PR, `/ship` 
 
 ~~**What:** Three new skills that use Claude Code's session-scoped PreToolUse hooks to add safety guardrails on demand.~~
 
-Shipped as `/careful`, `/freeze`, `/guard`, and `/unfreeze` in v0.6.5. Includes hook fire-rate telemetry (pattern name only, no command content) and inline skill activation telemetry.
+Shipped as `/careful`, `/freeze`, `/guard`, and `/unfreeze` in v0.6.5. Includes hook fire-rate logging (pattern name only, no command content) and inline skill activation logging.
 
-### Skill usage telemetry — SHIPPED
+### Skill usage logging — SHIPPED
 
 ~~**What:** Track which skills get invoked, how often, from which repo.~~
 
-Shipped in v0.6.5. TemplateContext in gen-skill-docs.ts bakes skill name into preamble telemetry line. Analytics CLI (`bun run analytics`) for querying. /retro integration shows skills-used-this-week.
+Shipped in v0.6.5. TemplateContext in gen-skill-docs.ts bakes skill name into preamble logging line. Analytics CLI (`bun run output`) for querying. /retro integration shows skills-used-this-week.
 
-### /investigate scoped debugging enhancements (gated on telemetry)
+### /investigate scoped debugging enhancements (gated on logging)
 
-**What:** Six enhancements to /investigate auto-freeze, contingent on telemetry showing the freeze hook actually fires in real debugging sessions.
+**What:** Six enhancements to /investigate auto-freeze, contingent on logging showing the freeze hook actually fires in real debugging sessions.
 
-**Why:** /investigate v0.7.1 auto-freezes edits to the module being debugged. If telemetry shows the hook fires often, these enhancements make the experience smarter. If it never fires, the problem wasn't real and these aren't worth building.
+**Why:** /investigate v0.7.1 auto-freezes edits to the module being debugged. If logging shows the hook fires often, these enhancements make the experience smarter. If it never fires, the problem wasn't real and these aren't worth building.
 
 **Context:** All items are prose additions to `investigate/SKILL.md.tmpl`. No new scripts.
 
@@ -649,7 +649,7 @@ Shipped in v0.6.5. TemplateContext in gen-skill-docs.ts bakes skill name into pr
 - /setup-deploy — one-time deploy platform configuration
 - /review Performance & Bundle Impact pass
 - E2E model pinning (Sonnet default, Opus for quality tests)
-- E2E timing telemetry (first_response_ms, max_inter_turn_ms, wall_clock_ms)
+- E2E timing logging (first_response_ms, max_inter_turn_ms, wall_clock_ms)
 - test:e2e:fast tier, --retry 2 on all E2E scripts
 **Completed:** v0.9.8.0
 

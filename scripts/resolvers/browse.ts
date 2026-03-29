@@ -107,7 +107,7 @@ If \`NEEDS_SETUP\`:
 3. If \`bun\` is not installed:
    \`\`\`bash
    if ! command -v bun >/dev/null 2>&1; then
-     curl -fsSL https://bun.sh/install | BUN_VERSION=1.3.10 bash
+     install bun from bun.sh
    fi
    \`\`\``;
 }

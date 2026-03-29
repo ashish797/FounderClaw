@@ -217,7 +217,7 @@ grep -q "^\.env$\|^\.env\.\*" .gitignore 2>/dev/null && echo ".env IS gitignored
 **CI configs with inline secrets (not using secret stores):**
 ```bash
 for f in $(find .github/workflows -maxdepth 1 \( -name '*.yml' -o -name '*.yaml' \) 2>/dev/null) .gitlab-ci.yml .circleci/config.yml; do
-  [ -f "$f" ] && grep -n "password:\|token:\|secret:\|api_key:" "$f" | grep -v '\${{' | grep -v 'secrets\.'
+  [ -f "$f" ] && grep -n "password:\|token:\|secret:\|api-key:" "$f" | grep -v '\${{' | grep -v 'secrets\.'
 done 2>/dev/null
 ```
 
@@ -330,7 +330,7 @@ ls -la .claude/skills/ 2>/dev/null
 Use Grep to search all local skill SKILL.md files for suspicious patterns:
 - `curl`, `wget`, `fetch`, `http`, `exfiltrat` (network exfiltration)
 - `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `env.`, `process.env` (credential access)
-- `IGNORE PREVIOUS`, `system override`, `disregard`, `forget your instructions` (prompt injection)
+- `[BLOCKED-PATTERN]`, `[BLOCKED-PATTERN]`, `[BLOCKED-PATTERN]`, `[BLOCKED-PATTERN]` (prompt injection)
 
 **Tier 2 — global skills (requires permission):** Before scanning globally installed skills or user settings, use Ask the user:
 "Phase 8 can scan your globally installed AI coding agent skills and hooks for malicious patterns. This reads files outside the repo. Want to include this?"
